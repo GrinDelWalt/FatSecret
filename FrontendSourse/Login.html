@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEALS EAT - Регистрация</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .nav-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .nav-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-button.active {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: slideDown 0.5s ease;
+        }
+
+        .api-error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: slideDown 0.5s ease;
+        }
+
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 5px;
+            transition: all 0.3s ease;
+            background: #e1e5e9;
+        }
+
+        .password-strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            width: 0%;
+        }
+
+        .password-weak .password-strength-fill {
+            background: #e74c3c;
+            width: 33%;
+        }
+        .password-medium .password-strength-fill {
+            background: #f39c12;
+            width: 66%;
+        }
+        .password-strong .password-strength-fill {
+            background: #27ae60;
+            width: 100%;
+        }
+
+        .password-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        .login-form {
+            border-top: 1px solid #e1e5e9;
+            margin-top: 30px;
+            padding-top: 30px;
+        }
+
+        .form-switch {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .switch-button {
+            background: none;
+            border: none;
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 16px;
+        }
+
+        .switch-button:hover {
+            color: #764ba2;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bmr-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .bmr-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1976d2;
+        }
+
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.5s ease;
+        }
+
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .form-container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- Навигационное меню -->
+    <nav class="nav">
+        <div class="nav-container">
+            <button
+                    @click="navigateTo('home')"
+                    class="nav-button"
+                    :class="{ active: currentPage === 'home' }"
+            >
+                🏠 Главная
+            </button>
+            <button
+                    @click="navigateTo('diary')"
+                    class="nav-button"
+                    :class="{ active: currentPage === 'diary' }"
+                    v-if="isAuthenticated"
+            >
+                📖 Дневник питания
+            </button>
+            <button
+                    @click="navigateTo('auth')"
+                    class="nav-button"
+                    :class="{ active: currentPage === 'auth' }"
+                    v-if="!isAuthenticated"
+            >
+                📝 Вход / Регистрация
+            </button>
+            <button
+                    @click="handleLogout"
+                    class="nav-button"
+                    v-if="isAuthenticated"
+            >
+                🚪 Выход ({{ currentUser?.username }})
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Страница авторизации/регистрации -->
+        <transition name="fade">
+            <div v-if="currentPage === 'auth'" class="form-container">
+                <!-- Сообщения -->
+                <transition name="fade">
+                    <div v-if="successMessage" class="success-message">
+                        {{ successMessage }}
+                    </div>
+                </transition>
+
+                <transition name="fade">
+                    <div v-if="apiError" class="api-error-message">
+                        {{ apiError }}
+                    </div>
+                </transition>
+
+                <!-- Переключатель между входом и регистрацией -->
+                <div class="form-switch">
+                    <button
+                            @click="toggleAuthMode"
+                            class="switch-button"
+                    >
+                        {{ isLoginMode ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти' }}
+                    </button>
+                </div>
+
+                <!-- Форма входа -->
+                <div v-if="isLoginMode">
+                    <h2 class="form-title">Вход в HEALS EAT</h2>
+
+                    <form @submit.prevent="handleLogin">
+                        <div class="form-group">
+                            <label>Email или имя пользователя *</label>
+                            <input
+                                    type="text"
+                                    v-model="loginForm.login"
+                                    placeholder="Введите email или имя пользователя"
+                                    required
+                                    :class="{ error: loginErrors.login }"
+                            >
+                            <transition name="fade">
+                                <div v-if="loginErrors.login" class="error-message">
+                                    {{ loginErrors.login }}
+                                </div>
+                            </transition>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Пароль *</label>
+                            <input
+                                    type="password"
+                                    v-model="loginForm.password"
+                                    placeholder="Введите пароль"
+                                    required
+                                    :class="{ error: loginErrors.password }"
+                            >
+                            <transition name="fade">
+                                <div v-if="loginErrors.password" class="error-message">
+                                    {{ loginErrors.password }}
+                                </div>
+                            </transition>
+                        </div>
+
+                        <button
+                                type="submit"
+                                class="submit-button"
+                                :disabled="isSubmitting"
+                        >
+                            {{ isSubmitting ? 'Вход...' : 'Войти' }}
+                            <span v-if="isSubmitting" class="loading-spinner"></span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Форма регистрации -->
+                <div v-else>
+                    <h2 class="form-title">Регистрация в HEALS EAT</h2>
+
+                    <form @submit.prevent="handleRegistration">
+                        <!-- Основная информация -->
+                        <div class="form-group">
+                            <label>Имя пользователя *</label>
+                            <input
+                                    type="text"
+                                    v-model="registerForm.username"
+                                    placeholder="Придумайте имя пользователя"
+                                    required
+                                    :class="{ error: registerErrors.username }"
+                                    @blur="validateField('username')"
+                                    @input="clearError('username')"
+                            >
+                            <transition name="fade">
+                                <div v-if="registerErrors.username" class="error-message">
+                                    {{ registerErrors.username }}
+                                </div>
+                            </transition>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input
+                                    type="email"
+                                    v-model="registerForm.email"
+                                    placeholder="your@email.com"
+                                    required
+                                    :class="{ error: registerErrors.email }"
+                                    @blur="validateField('email')"
+                                    @input="clearError('email')"
+                            >
+                            <transition name="fade">
+                                <div v-if="registerErrors.email" class="error-message">
+                                    {{ registerErrors.email }}
+                                </div>
+                            </transition>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Пароль *</label>
+                            <input
+                                    type="password"
+                                    v-model="registerForm.password"
+                                    placeholder="Не менее 6 символов"
+                                    required
+                                    :class="{ error: registerErrors.password }"
+                                    @input="handlePasswordInput"
+                                    @blur="validateField('password')"
+                            >
+
+                            <!-- Индикатор силы пароля -->
+                            <div v-if="registerForm.password" class="password-strength" :class="passwordStrengthClass">
+                                <div class="password-strength-fill"></div>
+                            </div>
+
+                            <div v-if="registerForm.password" class="password-hint">
+                                Сила пароля: {{ passwordStrengthText }}
+                            </div>
+
+                            <transition name="fade">
+                                <div v-if="registerErrors.password" class="error-message">
+                                    {{ registerErrors.password }}
+                                </div>
+                            </transition>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Подтвердите пароль *</label>
+                            <input
+                                    type="password"
+                                    v-model="registerForm.confirmPassword"
+                                    placeholder="Повторите пароль"
+                                    required
+                                    :class="{ error: registerErrors.confirmPassword }"
+                                    @blur="validateField('confirmPassword')"
+                                    @input="clearError('confirmPassword')"
+                            >
+                            <transition name="fade">
+                                <div v-if="registerErrors.confirmPassword" class="error-message">
+                                    {{ registerErrors.confirmPassword }}
+                                </div>
+                            </transition>
+                        </div>
+
+                        <!-- Физические параметры -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Возраст</label>
+                                <input
+                                        type="number"
+                                        v-model.number="registerForm.age"
+                                        placeholder="лет"
+                                        min="1"
+                                        max="120"
+                                        @input="calculateBMR"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label>Вес (кг)</label>
+                                <input
+                                        type="number"
+                                        v-model.number="registerForm.weight"
+                                        placeholder="кг"
+                                        min="1"
+                                        step="0.1"
+                                        @input="calculateBMR"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label>Рост (см)</label>
+                                <input
+                                        type="number"
+                                        v-model.number="registerForm.height"
+                                        placeholder="см"
+                                        min="1"
+                                        @input="calculateBMR"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Пол и дополнительные параметры -->
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label>Пол</label>
+                                <select v-model="registerForm.gender" @change="calculateBMR">
+                                    <option value="">Не указан</option>
+                                    <option value="male">Мужской</option>
+                                    <option value="female">Женский</option>
+                                    <option value="other">Другой</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Заметки</label>
+                                <input
+                                        type="text"
+                                        v-model="registerForm.notes"
+                                        placeholder="Дополнительная информация (необязательно)"
+                                        maxlength="500"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Цели и активность -->
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label>Цель</label>
+                                <select v-model="registerForm.goal" @change="calculateBMR">
+                                    <option value="lose">Похудение</option>
+                                    <option value="maintain">Поддержание веса</option>
+                                    <option value="gain">Набор массы</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Уровень активности</label>
+                                <select v-model="registerForm.activity" @change="calculateBMR">
+                                    <option value="low">Низкая (сидячий образ жизни)</option>
+                                    <option value="moderate">Умеренная (1-3 тренировки в неделю)</option>
+                                    <option value="high">Высокая (3-5 тренировок в неделю)</option>
+                                    <option value="very-high">Очень высокая (ежедневные тренировки)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Информация о BMR -->
+                        <transition name="fade">
+                            <div v-if="calculatedBMR" class="bmr-info">
+                                <div>Ваша дневная норма калорий:</div>
+                                <div class="bmr-value">{{ calculatedBMR }} ккал</div>
+                                <div style="font-size: 14px; color: #666; margin-top: 5px;">
+                                    Для достижения цели: {{ goalCalories }} ккал/день
+                                </div>
+                            </div>
+                        </transition>
+
+                        <button
+                                type="submit"
+                                class="submit-button"
+                                :disabled="!isRegisterFormValid || isSubmitting"
+                        >
+                            {{ isSubmitting ? 'Создание аккаунта...' : 'Создать аккаунт' }}
+                            <span v-if="isSubmitting" class="loading-spinner"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </transition>
+
+        <!-- Главная страница -->
+        <transition name="fade">
+            <div v-if="currentPage === 'home'" class="form-container">
+                <h2 class="form-title">Добро пожаловать в HEALS EAT</h2>
+                <div v-if="isAuthenticated" style="text-align: center;">
+                    <p style="color: #666; margin-bottom: 20px;">
+                        Привет, {{ currentUser?.username }}! Готовы следить за своим питанием?
+                    </p>
+                    <button @click="navigateTo('diary')" class="submit-button" style="max-width: 300px;">
+                        Открыть дневник питания
+                    </button>
+                </div>
+                <div v-else style="text-align: center;">
+                    <p style="color: #666; margin-bottom: 20px;">
+                        Ваш персональный дневник питания для здорового образа жизни
+                    </p>
+                    <button @click="navigateTo('auth')" class="submit-button" style="max-width: 300px;">
+                        Войти или зарегистрироваться
+                    </button>
+                </div>
+            </div>
+        </transition>
+
+        <!-- Дневник питания -->
+        <transition name="fade">
+            <div v-if="currentPage === 'diary'" class="form-container">
+                <h2 class="form-title">Дневник питания</h2>
+                <p style="text-align: center; color: #666;">
+                    Здесь будет ваш дневник питания
+                </p>
+            </div>
+        </transition>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, computed, reactive, onMounted } = Vue;
+
+    createApp({
+        setup() {
+            // Конфигурация API
+            const API_BASE_URL = 'https://localhost:7000/api'; // Замените на ваш URL
+
+            // Настройка axios
+            axios.defaults.baseURL = API_BASE_URL;
+            axios.defaults.headers.common['Content-Type'] = 'application/json';
+
+            // Реактивные данные
+            const currentPage = ref('home');
+            const isSubmitting = ref(false);
+            const isLoginMode = ref(true);
+            const successMessage = ref('');
+            const apiError = ref('');
+            const isAuthenticated = ref(false);
+            const currentUser = ref(null);
+
+            const loginForm = reactive({
+                login: '',
+                password: ''
+            });
+
+            const registerForm = reactive({
+                username: '',
+                email: '',
+                password: '',
+                confirmPassword: '',
+                age: null,
+                weight: null,
+                height: null,
+                gender: '',
+                goal: 'maintain',
+                activity: 'moderate',
+                notes: ''
+            });
+
+            const loginErrors = reactive({});
+            const registerErrors = reactive({});
+            const passwordStrength = ref(0);
+            const calculatedBMR = ref(0);
+
+            // Computed свойства
+            const passwordStrengthClass = computed(() => {
+                if (passwordStrength.value < 3) return 'password-weak';
+                if (passwordStrength.value < 5) return 'password-medium';
+                return 'password-strong';
+            });
+
+            const passwordStrengthText = computed(() => {
+                if (passwordStrength.value < 2) return 'Слабый';
+                if (passwordStrength.value < 4) return 'Средний';
+                return 'Сильный';
+            });
+
+            const isRegisterFormValid = computed(() => {
+                return registerForm.username &&
+                    registerForm.email &&
+                    registerForm.password &&
+                    registerForm.confirmPassword &&
+                    registerForm.password === registerForm.confirmPassword &&
+                    registerForm.password.length >= 6 &&
+                    Object.keys(registerErrors).length === 0;
+            });
+
+            const goalCalories = computed(() => {
+                if (!calculatedBMR.value) return 0;
+
+                const adjustments = {
+                    lose: -500,
+                    maintain: 0,
+                    gain: 500
+                };
+
+                return calculatedBMR.value + adjustments[registerForm.goal];
+            });
+
+            // Методы авторизации
+            const setAuthToken = (token) => {
+                if (token) {
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                    localStorage.setItem('auth_token', token);
+                } else {
+                    delete axios.defaults.headers.common['Authorization'];
+                    localStorage.removeItem('auth_token');
+                }
+            };
+
+            const checkAuthStatus = async () => {
+                const token = localStorage.getItem('auth_token');
+                if (token) {
+                    setAuthToken(token);
+                    try {
+                        const response = await axios.get('/auth/me');
+                        if (response.data.success) {
+                            isAuthenticated.value = true;
+                            currentUser.value = response.data.data;
+                        }
+                    } catch (error) {
+                        // Токен недействителен
+                        handleLogout();
+                    }
+                }
+            };
+
+            const handleLogin = async () => {
+                isSubmitting.value = true;
+                apiError.value = '';
+
+                try {
+                    const response = await axios.post('/auth/login', {
+                        login: loginForm.login,
+                        password: loginForm.password
+                    });
+
+                    if (response.data.success) {
+                        const { token, username } = response.data.data;
+                        setAuthToken(token);
+                        isAuthenticated.value = true;
+                        currentUser.value = { username, email: loginForm.login };
+
+                        successMessage.value = 'Вход выполнен успешно!';
+                        setTimeout(() => {
+                            navigateTo('home');
+                            successMessage.value = '';
+                        }, 1500);
+                    }
+                } catch (error) {
+                    console.error('Ошибка входа:', error);
+                    if (error.response?.data?.message) {
+                        apiError.value = error.response.data.message;
+                    } else {
+                        apiError.value = 'Ошибка при входе. Проверьте данные и попробуйте снова.';
+                    }
+                } finally {
+                    isSubmitting.value = false;
+                }
+            };
+
+            const handleRegistration = async () => {
+                // Валидация всех полей
+                Object.keys(registerForm).forEach(field => {
+                    if (['username', 'email', 'password', 'confirmPassword'].includes(field)) {
+                        validateField(field);
+                    }
+                });
+
+                if (!isRegisterFormValid.value) {
+                    return;
+                }
+
+                isSubmitting.value = true;
+                apiError.value = '';
+
+                try {
+                    // Подготовка данных для API согласно CreateUserRequestsDTO
+                    const requestData = {
+                        username: registerForm.username,
+                        email: registerForm.email,
+                        password: registerForm.password,
+                        age: registerForm.age || 0,
+                        weight: registerForm.weight || 0,
+                        height: registerForm.height || 0,
+                        gender: registerForm.gender || null,
+                        goal: registerForm.goal,
+                        activityLevel: registerForm.activity,
+                        basalMetabolicRate: calculatedBMR.value,
+                        dailyCalorieTarget: goalCalories.value,
+                        notes: registerForm.notes || null
+                    };
+
+                    const response = await axios.post('/auth/register', requestData);
+
+                    if (response.data.success) {
+                        successMessage.value = 'Регистрация прошла успешно! Теперь вы можете войти в систему.';
+
+                        // Переключаемся на форму входа
+                        setTimeout(() => {
+                            isLoginMode.value = true;
+                            successMessage.value = '';
+                            // Предзаполняем форму входа
+                            loginForm.login = registerForm.email;
+                        }, 2000);
+                    }
+                } catch (error) {
+                    console.error('Ошибка регистрации:', error);
+                    if (error.response?.data?.message) {
+                        apiError.value = error.response.data.message;
+                    } else {
+                        apiError.value = 'Ошибка при регистрации. Попробуйте еще раз.';
+                    }
+                } finally {
+                    isSubmitting.value = false;
+                }
+            };
+
+            const handleLogout = async () => {
+                try {
+                    await axios.post('/auth/logout');
+                } catch (error) {
+                    console.error('Ошибка при выходе:', error);
+                } finally {
+                    setAuthToken(null);
+                    isAuthenticated.value = false;
+                    currentUser.value = null;
+                    navigateTo('home');
+                }
+            };
+
+            // Методы валидации
+            const validateField = (fieldName) => {
+                switch(fieldName) {
+                    case 'username':
+                        if (registerForm.username.length < 3) {
+                            registerErrors.username = 'Имя пользователя должно содержать минимум 3 символа';
+                        } else if (!/^[a-zA-Z0-9_а-яА-Я]+$/.test(registerForm.username)) {
+                            registerErrors.username = 'Имя пользователя может содержать только буквы, цифры и подчеркивания';
+                        }
+                        break;
+
+                    case 'email':
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(registerForm.email)) {
+                            registerErrors.email = 'Введите корректный email адрес';
+                        }
+                        break;
+
+                    case 'password':
+                        if (registerForm.password.length < 6) {
+                            registerErrors.password = 'Пароль должен содержать минимум 6 символов';
+                        }
+                        break;
+
+                    case 'confirmPassword':
+                        if (registerForm.password !== registerForm.confirmPassword) {
+                            registerErrors.confirmPassword = 'Пароли не совпадают';
+                        }
+                        break;
+                }
+            };
+
+            const clearError = (fieldName) => {
+                delete registerErrors[fieldName];
+            };
+
+            const checkPasswordStrength = () => {
+                const password = registerForm.password;
+                let strength = 0;
+
+                if (password.length >= 6) strength++;
+                if (password.length >= 8) strength++;
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[0-9]/.test(password)) strength++;
+                if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+                passwordStrength.value = strength;
+            };
+
+            const handlePasswordInput = () => {
+                clearError('password');
+                checkPasswordStrength();
+                validateField('password');
+            };
+
+            const calculateBMR = () => {
+                if (!registerForm.weight || !registerForm.height || !registerForm.age) {
+                    calculatedBMR.value = 0;
+                    return;
+                }
+
+                // Формула Миффлина-Сан Жеора (усредненная)
+                const bmr = 10 * registerForm.weight + 6.25 * registerForm.height - 5 * registerForm.age + 5;
+
+                const activityMultipliers = {
+                    low: 1.2,
+                    moderate: 1.375,
+                    high: 1.55,
+                    'very-high': 1.725
+                };
+
+                calculatedBMR.value = Math.round(bmr * activityMultipliers[registerForm.activity]);
+            };
+
+            // Утилиты
+            const clearMessages = () => {
+                successMessage.value = '';
+                apiError.value = '';
+            };
+
+            const toggleAuthMode = () => {
+                isLoginMode.value = !isLoginMode.value;
+                clearMessages();
+                // Очищаем ошибки при переключении
+                Object.keys(loginErrors).forEach(key => delete loginErrors[key]);
+                Object.keys(registerErrors).forEach(key => delete registerErrors[key]);
+            };
+
+            const navigateTo = (page) => {
+                currentPage.value = page;
+                clearMessages();
+            };
+
+            // Lifecycle
+            onMounted(() => {
+                console.log('HEALS EAT приложение запущено');
+                checkAuthStatus();
+            });
+
+            return {
+                currentPage,
+                isSubmitting,
+                isLoginMode,
+                successMessage,
+                apiError,
+                isAuthenticated,
+                currentUser,
+                loginForm,
+                registerForm,
+                loginErrors,
+                registerErrors,
+                passwordStrengthClass,
+                passwordStrengthText,
+                isRegisterFormValid,
+                calculatedBMR,
+                goalCalories,
+                navigateTo,
+                toggleAuthMode,
+                validateField,
+                clearError,
+                handlePasswordInput,
+                calculateBMR,
+                handleLogin,
+                handleRegistration,
+                handleLogout
+            };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
