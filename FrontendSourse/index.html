@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEALS EAT - Дневник питания</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+     
+
+        <div class="app-container">
+            <!-- Header -->
+            <header class="header" v-if="currentPage === 'home'">
+                <div class="logo">HEALS EAT</div>
+                <div class="slogan">Питайтесь правильно, живите здорово! Ваш путь к сбалансированному питанию начинается здесь</div>
+            </header>
+            
+           
+              <div v-if="currentPage === 'home'" class="home-container">
+                    <div class="welcome-text">
+                        <h2>Добро пожаловать в HEALS EAT!</h2>
+                        <p>Начните свой путь к здоровому образу жизни вместе с нами. 
+                           Отслеживайте свое питание, достигайте целей и становитесь лучше каждый день.</p>
+                    </div>
+                    
+                    <div class="cta-buttons">
+                        <button @click="switchPage('registration')" class="cta-button">
+                           <a href="entry.html">🚀 Начать сейчас</a>
+                        </button>
+                        <button @click="goToDiary()" class="cta-button">
+                            <a href="note.html">📊 Мой дневник</a>
+                        </button>
+                    </div>
+                    
+                    <div class="features">
+                        <div class="feature-card">
+                            <div class="feature-icon">📝</div>
+                            <div class="feature-title">Учет питания</div>
+                            <div class="feature-description">Ведите детальный учет всех приемов пищи и отслеживайте калории</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📈</div>
+                            <div class="feature-title">Статистика</div>
+                            <div class="feature-description">Анализируйте прогресс с помощью наглядных графиков и отчетов</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-title">Достижение целей</div>
+                            <div class="feature-description">Ставьте цели и отслеживайте их выполнение</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💡</div>
+                            <div class="feature-title">Советы</div>
+                            <div class="feature-description">Получайте персонализированные рекомендации по питанию</div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Main Content -->
+          
+                
+               
+             <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <p>&copy; 2025 HEALS EAT. Питайтесь правильно, живите здорово!</p>
+                    <p style="margin-top: 10px; opacity: 0.8;">
+                        Ваш надежный помощник в мире здорового питания
+                    </p>
+                </div>
+            </footer>
+    
+    <script src="app.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,192 @@
+  <!DOCTYPE html>
+<html lang="ru">
+    <html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEALS EAT - Дневник питания</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    
+<nav class="nav">
+                <div class="nav-container">
+                    <button @click="switchPage('home')" class="nav-button"><a href="index.html">🏠 Главная</a></button>
+                    <button @click="goToDiary()" class="nav-button"><a href="entry.html">📝Регистрация</a></button>
+                
+                </div>
+            </nav>
+ <div class="app-container">
+            <!-- Header -->
+            <header class="header">
+                <div class="logo">HEALS EAT</div>
+                <div class="slogan">Дневник питания - отслеживайте ваше питание легко!</div>
+            </header>
+            
+          
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Alerts -->
+                <div v-if="showAlert" :class="['alert', alertType === 'success' ? 'alert-success' : 'alert-error']">
+                    {{ alertMessage }}
+                </div>
+                
+                <!-- Diary Page -->
+                <div class="diary-container">
+                    <h2 class="form-title">📖 Мой дневник питания</h2>
+                    <p style="text-align: center; margin-bottom: 30px; color: #388e3c;">
+                        Добавляйте приемы пищи без регистрации! Для сохранения данных используйте кнопку "Сохранить данные"
+                    </p>
+                    
+                    <!-- Выбор даты -->
+                    <div class="form-group">
+                        <label>Выберите дату:</label>
+                        <input type="date" v-model="selectedDate" style="max-width: 200px;">
+                    </div>
+                    
+                    <!-- Статистика за выбранный день -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">{{ totalCalories }}</div>
+                            <div class="stat-label">Калории</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">{{ totalProtein }}г</div>
+                            <div class="stat-label">Белки</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">{{ totalCarbs }}г</div>
+                            <div class="stat-label">Углеводы</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">{{ totalFat }}г</div>
+                            <div class="stat-label">Жиры</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Форма добавления/редактирования пищи -->
+                    <div class="food-form">
+                        <h3 style="margin-bottom: 20px; color: #2e7d32;">
+                            {{ editingEntry ? '✏️ Редактировать запись' : '➕ Добавить прием пищи' }}
+                        </h3>
+                        <form @submit.prevent="editingEntry ? updateFoodEntry() : addFoodEntry()">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Название блюда *</label>
+                                    <input type="text" v-model="foodForm.name" placeholder="Например: Овсяная каша" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Калории *</label>
+                                    <input type="number" v-model="foodForm.calories" placeholder="ккал" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Белки (г)</label>
+                                    <input type="number" v-model="foodForm.protein" placeholder="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Углеводы (г)</label>
+                                    <input type="number" v-model="foodForm.carbs" placeholder="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Жиры (г)</label>
+                                    <input type="number" v-model="foodForm.fat" placeholder="0">
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div class="form-group">
+                                    <label>Дата</label>
+                                    <input type="date" v-model="foodForm.date">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Время</label>
+                                    <input type="time" v-model="foodForm.time">
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                <button type="submit" class="submit-button">
+                                    {{ editingEntry ? : '➕ Добавить еще' }}
+                                </button>
+                                <button v-if="editingEntry" @click="cancelEdit" type="button" class="submit-button" style="background: #6c757d;">
+                                   <a href="entry.html">💾 Сохранить данные </a> 
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+ 
+                    
+                    
+                    <!-- История приемов пищи за выбранный день -->
+                    <div class="food-entries">
+                        <h3 style="margin-bottom: 20px; color: #2e7d32;">
+                            📋 Приемы пищи за {{ getDateDisplay(selectedDate) }}
+                        </h3>
+                        
+                        <div v-if="filteredEntries.length === 0" class="empty-state">
+                            <div class="empty-state-icon">📝</div>
+                            <h3>Записей на эту дату нет</h3>
+                            <p>Добавьте первый прием пищи</p>
+                        </div>
+                        
+                        <div v-else>
+                            <div v-for="entry in filteredEntries" :key="entry.id" class="food-entry">
+                                <div class="food-header">
+                                    <div class="food-name">{{ entry.name }}</div>
+                                    <div class="food-calories">{{ entry.calories }} ккал</div>
+                                </div>
+                                <div style="color: #81c784; font-size: 14px; margin-bottom: 10px;">
+                                    {{ entry.date }} в {{ formatTime(entry.time) }}
+                                </div>
+                                <div class="food-details">
+                                    <div class="detail-item">
+                                        <div class="detail-label">Белки</div>
+                                        <div class="detail-value">{{ entry.protein || 0 }}г</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Углеводы</div>
+                                        <div class="detail-value">{{ entry.carbs || 0 }}г</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Жиры</div>
+                                        <div class="detail-value">{{ entry.fat || 0 }}г</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Время</div>
+                                        <div class="detail-value">{{ entry.time }}</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                    <button @click="editFoodEntry(entry)" class="delete-btn" style="background: #2196f3;">
+                                        ✏️ Редактировать
+                                    </button>
+                                    <button @click="deleteFoodEntry(entry.id)" class="delete-btn">
+                                        🗑️ Удалить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <p>&copy; 2025 HEALS EAT. Дневник питания - используйте без ограничений!</p>
+                    <p style="margin-top: 10px; opacity: 0.8;">
+                        Все данные сохраняются в вашем браузере. Для долговременного хранения зарегистрируйтесь.
+                    </p>
+                </div>
+            </footer>
+        </div>
+    <script src="app.js"></script>
+            
+ </body>   
+ </html>    

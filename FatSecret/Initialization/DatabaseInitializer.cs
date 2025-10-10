@@ -1,0 +1,39 @@
+using FatSecret.DAL.Context;
+using Microsoft.EntityFrameworkCore;
+
+namespace FatSecret.Initialization;
+
+public class DatabaseInitializer : IDbInitializer, IHostedService
+{
+    private readonly IServiceProvider _serviceProvider;
+
+    public DatabaseInitializer(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+    
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FatSecretDbContext>();
+
+        try
+        {
+            dbContext.Database.Migrate();
+            Console.WriteLine("Database migrated");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при миграции базы данных: {ex.Message}");
+            throw; // Перебрасываем ошибку, чтобы приложение не продолжало работу
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
+    
+}
