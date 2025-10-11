@@ -396,9 +396,123 @@
                 margin-left: 0;
             }
         }
+         .nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .nav-container {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-start;
+        }
+
+        .nav-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+.nav-button a {
+            color: white;
+text-decoration: none;
+}
+        .nav-button.active {
+            background: rgba(255, 255, 255, 0.4);
+        }
+.profile-btn {
+    position: relative;
+    margin-left: auto !important;
+}
+
+.profile-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+}
+
+.profile-tooltip {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.profile-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid rgba(0, 0, 0, 0.8);
+}
+
+.profile-btn:hover .profile-tooltip {
+    opacity: 1;
+    visibility: visible;
+    bottom: -35px;
+}
+
     </style>
 </head>
 <body>
+     <!-- Навигационное меню -->
+    <nav class="nav">
+        <div class="nav-container">
+            
+            <button
+                    @click="navigateTo('auth')"
+                    class="nav-button"
+                    :class="{ active: currentPage === 'auth' }"
+                    v-if="!isAuthenticated"
+            ><a href="Login.html">
+                🚪 Выход </a>
+            </button>
+
+            <button class="nav-button profile-btn" style="margin-left: auto;">
+            <a href="lk.html" class="profile-link">
+                👤
+                <span class="profile-tooltip">Личный кабинет</span>
+            </a>
+        </button>
+        
+    </div>
+</nav>
+        </div>
+    </nav>
     <div class="container">
         <header>
             <h1>Дневник питания</h1>
