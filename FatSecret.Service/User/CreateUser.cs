@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using FatSecret.DAL.Interfaces;
 using FatSecret.Domain.Models.DTO;
 using FatSecret.Domain.Models.DTO.User;

@@ -1,4 +1,3 @@
-using FatSecret.Domain.Models;
 using FatSecret.Domain.Models.DTO;
 using FatSecret.Service.Interfaces.Authentication;
 using Microsoft.Extensions.Configuration;

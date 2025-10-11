@@ -1,4 +1,5 @@
 
+using System;
 using FatSecret.Service.Interfaces;
 using FatSecret.Service.Interfaces.Password;
 

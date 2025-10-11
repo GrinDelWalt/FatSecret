@@ -8,7 +8,7 @@
 /FatSecret.Service/bin/
 /FatSecret.Service/obj/
 /FrontendSourse/obj/
-/pgdata/
+pgdata/
 
 .idea/
 *.iml
@@ -26,3 +26,10 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
