@@ -1,14 +1,20 @@
+
 using FatSecret.DAL.Context;
-using FatSecret.Service.Interfaces.Repository;
+using FatSecret.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FatSecret.DAL;
 
-public class EntityRepository<T>(FatSecretDbContext dbContext, DbSet<T> entities) : IEntityRepository<T>
-    where T : class
+public class EntityRepository<T> : IEntityRepository<T> where T : class
 {
-    private readonly DbContext _context = dbContext;
-    private readonly DbSet<T> _entities = entities;
+    private readonly FatSecretDbContext _context;
+    private readonly DbSet<T> _entities;
+
+    public EntityRepository(FatSecretDbContext context)
+    {
+        _context = context;
+        _entities = context.Set<T>(); // Получаем DbSet из контекста
+    }
 
     public IQueryable<T> All()
     {

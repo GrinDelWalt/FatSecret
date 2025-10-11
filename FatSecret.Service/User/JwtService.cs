@@ -1,15 +1,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using FatSecret.DAL.Interfaces;
 using FatSecret.Domain.Entities.Identity;
 using FatSecret.Service.Interfaces.Authentication;
-using FatSecret.Service.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
-namespace FatSecret.Service.Authentication;
+namespace FatSecret.Service.User;
 
 public class JwtService : IJwtService
 {
@@ -30,16 +30,16 @@ public class JwtService : IJwtService
         _configuration = configuration;
     }
 
-    public async Task<string> GenerateTokenAsync(string login)
+    public async Task<string> GenerateTokenAsync(string email)
     {
         // Поиск пользователя
         var user = await _userRepository.All()
-            .Where(x => x.Login == login)
+            .Where(x => x.Email == email)
             .FirstOrDefaultAsync();
 
         if (user == null)
         {
-            _logger.LogError("User {Login} not found", login);
+            _logger.LogError("User {Login} not found", email);
             throw new UnauthorizedAccessException("Пользователь не найден.");
         }
 
@@ -50,7 +50,7 @@ public class JwtService : IJwtService
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, login),
+                new Claim(ClaimTypes.Name, email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim("UserId", user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email)
@@ -77,7 +77,7 @@ public class JwtService : IJwtService
         _tokenRepository.Add(userToken);
         await _tokenRepository.SaveChangesAsync();
 
-        _logger.LogInformation("Token generated for user {Login}", login);
+        _logger.LogInformation("Token generated for user {email}", email);
 
         return tokenString;
     }

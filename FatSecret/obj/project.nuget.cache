@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "qZnC+vpLprg=",
+  "dgSpecHash": "wFBjwuXZqxI=",
   "success": true,
   "projectFilePath": "F:\\Code\\C#\\FatSecret\\FatSecret\\FatSecret.csproj",
   "expectedPackageFiles": [
@@ -26,6 +26,7 @@
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\8.0.0-preview.6.23329.11\\microsoft.aspnetcore.cryptography.keyderivation.8.0.0-preview.6.23329.11.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.aspnetcore.dataprotection\\2.3.0\\microsoft.aspnetcore.dataprotection.2.3.0.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.aspnetcore.dataprotection.abstractions\\6.0.0\\microsoft.aspnetcore.dataprotection.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.aspnetcore.diagnostics.healthchecks\\2.2.0\\microsoft.aspnetcore.diagnostics.healthchecks.2.2.0.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.aspnetcore.hosting.abstractions\\2.3.0\\microsoft.aspnetcore.hosting.abstractions.2.3.0.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.aspnetcore.hosting.server.abstractions\\2.3.0\\microsoft.aspnetcore.hosting.server.abstractions.2.3.0.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.aspnetcore.http\\2.3.0\\microsoft.aspnetcore.http.2.3.0.nupkg.sha512",
@@ -68,6 +69,9 @@
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.extensions.dependencymodel\\9.0.6\\microsoft.extensions.dependencymodel.9.0.6.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.extensions.diagnostics\\9.0.6\\microsoft.extensions.diagnostics.9.0.6.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.extensions.diagnostics.abstractions\\9.0.6\\microsoft.extensions.diagnostics.abstractions.9.0.6.nupkg.sha512",
+    "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.extensions.diagnostics.healthchecks\\9.0.6\\microsoft.extensions.diagnostics.healthchecks.9.0.6.nupkg.sha512",
+    "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.extensions.diagnostics.healthchecks.abstractions\\9.0.6\\microsoft.extensions.diagnostics.healthchecks.abstractions.9.0.6.nupkg.sha512",
+    "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.extensions.diagnostics.healthchecks.entityframeworkcore\\9.0.6\\microsoft.extensions.diagnostics.healthchecks.entityframeworkcore.9.0.6.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\9.0.6\\microsoft.extensions.fileproviders.abstractions.9.0.6.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.extensions.fileproviders.embedded\\8.0.0-preview.6.23329.11\\microsoft.extensions.fileproviders.embedded.8.0.0-preview.6.23329.11.nupkg.sha512",
     "C:\\Users\\gzakhozhii\\.nuget\\packages\\microsoft.extensions.fileproviders.physical\\9.0.6\\microsoft.extensions.fileproviders.physical.9.0.6.nupkg.sha512",

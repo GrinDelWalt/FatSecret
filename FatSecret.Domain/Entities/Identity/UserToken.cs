@@ -1,3 +1,5 @@
+using FatSecret.Domain.Models;
+
 namespace FatSecret.Domain.Entities.Identity;
 
 public class UserToken : BaseEntity

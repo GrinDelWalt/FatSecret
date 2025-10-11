@@ -1,5 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace FatSecret.Domain.Models.DTO;
 
-public record LoginRequestDTO(string Login, string Password);
+public class LoginRequestDTO
+{
+    [Required(ErrorMessage = "Логин обязателен")]
+    public string Login { get; set; } = string.Empty; // Email или Username
 
-public record LoginResponseDTO(string Token, string Login, string Email);
+    [Required(ErrorMessage = "Пароль обязателен")]
+    public string Password { get; set; } = string.Empty;
+}
+public record LoginResponseDTO(
+    string Token,
+    string Username,
+    string Email,
+    DateTime ExpiresAt
+);

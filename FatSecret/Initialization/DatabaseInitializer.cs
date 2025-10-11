@@ -1,3 +1,4 @@
+using FatSecret.DAL;
 using FatSecret.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,13 @@ public class DatabaseInitializer : IDbInitializer, IHostedService
     public DatabaseInitializer(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
+    }
+    
+    public async Task InitializeAsync()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FatSecretDbContext>();
+        await context.Database.MigrateAsync();
     }
     
     public Task StartAsync(CancellationToken cancellationToken)

@@ -1,4 +1,4 @@
-namespace FatSecret.Service.Interfaces.Repository;
+namespace FatSecret.DAL.Interfaces;
 
 public interface IEntityRepository<T> where T : class
 {
