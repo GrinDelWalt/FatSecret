@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дневник питания</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+               background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        h1 {
+            color: #6a11cb;
+            font-size: 24px;
+        }
+
+        .date-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-selector label {
+            font-weight: 500;
+        }
+
+        .date-selector input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .prev-days {
+            margin-left: 15px;
+        }
+
+        .prev-days select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: white;
+        }
+
+        .summary {
+            background-color: #f8f4ff;
+            border-radius: 10px;
+            padding: 40px;
+            margin-bottom: 20px;
+            border: 1px solid #d6c2ff;
+        }
+
+        .summary h2 {
+            color: #6a11cb;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .kcal-summary {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+
+            background-color: white;
+            border-radius: 10px;
+            min-height: 50px;
+            display: flex;
+            justify-content:center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .kcal-bar {
+            flex-grow: 1;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .kcal-progress {
+            max-width: 800px;
+
+            height: 100%;
+            background: linear-gradient(to right, #4cd964, #5ac8fa);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .meals-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .meal-card {
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 15px;
+            background-color: white;
+            position: relative;
+            justify-content: space-between;
+
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .meal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #6a11cb;
+        }
+
+        .add-product-btn {
+            margin-right: 10px;
+          margin-top: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4cd964;
+            border: none;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: self-end;
+            cursor: pointer;
+          
+            font-size: 35px;
+        }
+
+        .add-product-btn:hover {
+            background-color: #44c454;
+            transform: scale(1.05);
+        }
+.delete-btn {
+           width: 40px;
+           height: 40px;
+    background: none;
+    border: 1px red;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.delete-btn:hover {
+    background-color: #e67082;
+    
+}
+        .products-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .product-name {
+            font-weight: 500;
+            width: 30%;
+        }
+.product-calories{
+     color: #666;
+}
+        .product-amount {
+            color: #666;
+            align-items: center;
+    text-align: center;
+            justify-content:center;
+
+
+        }
+
+        .kcal-info {
+            display: flex;
+            justify-content: space-between;
+           
+            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+}
+
+
+        .kcal-item {
+
+             word-spacing: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .kcal-value {
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #6a11cb;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .product-option {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .product-option:hover {
+            background-color: #f0f0f0;
+            border-color: #8a2be2;
+        }
+
+        .amount-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .amount-selector input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+
+        .btn-primary {
+            background-color: #6a11cb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a0db3;
+        }
+
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+        }
+
+        .empty-state {
+            text-align: center;
+            align-self: flex-start;
+            color: #888;
+            padding: -20px;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .date-selector {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .prev-days {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Дневник питания</h1>
+            <div class="date-selector">
+                <label for="current-date">Дата:</label>
+                <input type="date" id="current-date">
+               
+            </div>
+        </header>
+
+        <div class="summary">
+            <h2>Потребление за день</h2>
+              <div class="meals-container"></div>
+            <div class="kcal-info">
+                <div class="kcal-item">Калории: <span class="kcal-value" id="total-calories">0</span> ккал</div>
+                <div class="kcal-item">Белки: <span class="kcal-value" id="total-protein">0</span> г</div>
+                <div class="kcal-item">Жиры: <span class="kcal-value" id="total-fat">0</span> г</div>
+                <div class="kcal-item">Углеводы: <span class="kcal-value" id="total-carbs">0</span> г</div>
+            </div>
+            </div>
+           
+
+        <div class="meals-container">
+            <div class="meal-card" id="breakfast-card">
+                <div class="meal-header">
+                    <div class="meal-title">Завтрак</div>
+                    <button class="add-product-btn" data-meal="breakfast">+</button>
+                </div>
+                <div class="products-list" id="breakfast-list">
+                    <div class="empty-state">Продукты не добавлены</div>
+                </div>
+            </div>
+
+            <div class="meal-card" id="lunch-card">
+                <div class="meal-header">
+                    <div class="meal-title">Обед</div>
+                    <button class="add-product-btn" data-meal="lunch">+</button>
+                </div>
+                <div class="products-list" id="lunch-list">
+                    <div class="empty-state">Продукты не добавлены</div>
+                </div>
+            </div>
+
+            <div class="meal-card" id="dinner-card">
+                <div class="meal-header">
+                    <div class="meal-title">Ужин</div>
+                    <button class="add-product-btn" data-meal="dinner">+</button>
+                </div>
+                <div class="products-list" id="dinner-list">
+                    <div class="empty-state">Продукты не добавлены</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно выбора продукта -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Выберите продукт</div>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="product-search" placeholder="Поиск продуктов...">
+            </div>
+            <div class="products-grid" id="products-grid">
+                <!-- Продукты будут добавлены через JavaScript -->
+            </div>
+            <div class="amount-selector">
+                <label for="product-amount">Количество (г):</label>
+                <input type="number" id="product-amount" min="1" value="100">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancel-btn">Отмена</button>
+                <button class="btn btn-primary" id="add-btn">Добавить</button>
+            </div>
+        </div>
+    </div>
+            <div class="kcal-summary">
+    <span id="current-calories">0 ккал</span>
+    <div class="kcal-bar">
+        <div class="kcal-progress" id="kcal-progress"></div>
+    </div>
+    <span id="daily-norm">2000 ккал</span>
+</div>
+        
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Установка текущей даты по умолчанию
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('current-date').value = formattedDate;
+            
+            // Данные приложения
+            let currentMeal = '';
+            let selectedProduct = null;
+            let dailyData = {
+                breakfast: [],
+                lunch: [],
+                dinner: []
+            };
+            
+            // Получение нормы калорий из localStorage (имитация получения из Login.html)
+            const dailyNorm = localStorage.getItem('calculatedBMR') || 2000;
+            document.getElementById('daily-norm').textContent = `${dailyNorm} ккал`;
+            
+            // Пример базы данных продуктов
+            const productsDatabase = [
+                { id: 1, name: "Яблоко", calories: 52, protein: 0.3, fat: 0.2, carbs: 14 },
+                { id: 2, name: "Банан", calories: 89, protein: 1.1, fat: 0.3, carbs: 23 },
+                { id: 3, name: "Куриная грудка", calories: 165, protein: 31, fat: 3.6, carbs: 0 },
+                { id: 4, name: "Рис вареный", calories: 130, protein: 2.7, fat: 0.3, carbs: 28 },
+                { id: 5, name: "Овсянка", calories: 68, protein: 2.4, fat: 1.4, carbs: 12 },
+                { id: 6, name: "Йогурт натуральный", calories: 61, protein: 3.5, fat: 3.3, carbs: 4.7 },
+                { id: 7, name: "Творог", calories: 98, protein: 11, fat: 4.3, carbs: 3.4 },
+                { id: 8, name: "Яйцо куриное", calories: 155, protein: 13, fat: 11, carbs: 1.1 },
+                { id: 9, name: "Хлеб пшеничный", calories: 265, protein: 9, fat: 3.2, carbs: 49 },
+                { id: 10, name: "Сыр", calories: 402, protein: 25, fat: 33, carbs: 1.3 }
+            ];
+            
+            // Заполнение модального окна продуктами
+            const productsGrid = document.getElementById('products-grid');
+            productsDatabase.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.className = 'product-option';
+                productElement.textContent = product.name;
+                productElement.dataset.id = product.id;
+                productElement.addEventListener('click', function() {
+                    // Снятие выделения с предыдущего выбранного продукта
+                    document.querySelectorAll('.product-option').forEach(el => {
+                        el.style.backgroundColor = '';
+                        el.style.borderColor = '#e0e0e0';
+                    });
+                    
+                    // Выделение выбранного продукта
+                    this.style.backgroundColor = '#f0f0ff';
+                    this.style.borderColor = '#6a11cb';
+                    
+                    selectedProduct = product;
+                });
+                productsGrid.appendChild(productElement);
+            });
+            
+            // Открытие модального окна при нажатии на кнопку добавления продукта
+            document.querySelectorAll('.add-product-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    currentMeal = this.dataset.meal;
+                    document.getElementById('product-modal').style.display = 'flex';
+                    selectedProduct = null;
+                    
+                    // Сброс выделения продуктов
+                    document.querySelectorAll('.product-option').forEach(el => {
+                        el.style.backgroundColor = '';
+                        el.style.borderColor = '#e0e0e0';
+                    });
+                    
+                    // Сброс поля поиска и количества
+                    document.getElementById('product-search').value = '';
+                    document.getElementById('product-amount').value = '100';
+                });
+            });
+            
+            // Закрытие модального окна
+            document.querySelector('.close-btn').addEventListener('click', closeModal);
+            document.getElementById('cancel-btn').addEventListener('click', closeModal);
+            
+            // Добавление продукта в прием пищи
+            document.getElementById('add-btn').addEventListener('click', function() {
+                if (!selectedProduct) {
+                    alert('Пожалуйста, выберите продукт');
+                    return;
+                }
+                
+                const amount = parseInt(document.getElementById('product-amount').value);
+                if (isNaN(amount) || amount <= 0) {
+                    alert('Пожалуйста, укажите корректное количество');
+                    return;
+                }
+                
+                // Расчет КБЖУ для указанного количества
+                const ratio = amount / 100;
+                const productData = {
+                    id: selectedProduct.id,
+                    name: selectedProduct.name,
+                    amount: amount,
+                    calories: Math.round(selectedProduct.calories * ratio),
+                    protein: Math.round(selectedProduct.protein * ratio * 10) / 10,
+                    fat: Math.round(selectedProduct.fat * ratio * 10) / 10,
+                    carbs: Math.round(selectedProduct.carbs * ratio * 10) / 10
+                };
+                
+                // Добавление продукта в соответствующий прием пищи
+                dailyData[currentMeal].push(productData);
+                
+                // Обновление отображения
+                updateMealDisplay(currentMeal);
+                updateSummary();
+                
+                closeModal();
+            });
+            
+            // Функция закрытия модального окна
+            function closeModal() {
+                document.getElementById('product-modal').style.display = 'none';
+            }
+            
+            // Обновление отображения приема пищи
+            function updateMealDisplay(meal) {
+                const mealList = document.getElementById(`${meal}-list`);
+                const products = dailyData[meal];
+                
+                if (products.length === 0) {
+                    mealList.innerHTML = '<div class="empty-state">Продукты не добавлены</div>';
+                    return;
+                }
+                
+                mealList.innerHTML = '';
+                
+                products.forEach((product, index) => {
+                    const productElement = document.createElement('div');
+                    productElement.className = 'product-item';
+                    productElement.innerHTML = `
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-amount">${product.amount} г</div>
+                        <div class=" product-calories">${product.calories} ккал</div>
+                        <button class="delete-btn" data-meal="${meal}" data-index="${index}">🗑️</button>
+
+                    `;
+                    mealList.appendChild(productElement);
+                });
+                 setupDeleteHandlers();
+            }
+            
+            // Обновление сводки по КБЖУ
+            function updateSummary() {
+                let totalCalories = 0;
+                let totalProtein = 0;
+                let totalFat = 0;
+                let totalCarbs = 0;
+            
+
+                // Суммирование КБЖУ по всем приемам пищи
+                for (const meal in dailyData) {
+                    dailyData[meal].forEach(product => {
+                        totalCalories += product.calories;
+                        totalProtein += product.protein;
+                        totalFat += product.fat;
+                        totalCarbs += product.carbs;
+                    });
+                }
+                
+                // Обновление значений в интерфейсе
+                document.getElementById('current-calories').textContent = `${totalCalories} ккал`;
+                document.getElementById('total-calories').textContent = totalCalories;
+                document.getElementById('total-protein').textContent = totalProtein.toFixed(1);
+                document.getElementById('total-fat').textContent = totalFat.toFixed(1);
+                document.getElementById('total-carbs').textContent = totalCarbs.toFixed(1);
+                
+                // Обновление прогресс-бара
+                 document.getElementById('current-calories').textContent = `${totalCalories} ккал`;
+    const progressPercentage = Math.min((totalCalories / dailyNorm) * 100, 100);
+    document.getElementById('kcal-progress').style.width = `${progressPercentage}%`;
+}
+
+                function setupDeleteHandlers() {
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const meal = this.dataset.meal;
+            const index = parseInt(this.dataset.index);
+            
+            // Удаляем продукт из массива
+            dailyData[meal].splice(index, 1);
+            
+            // Обновляем отображение
+            updateMealDisplay(meal);
+            updateSummary();
+        });
+    });
+}
+            
+            // Поиск продуктов
+            document.getElementById('product-search').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const productOptions = document.querySelectorAll('.product-option');
+                
+                productOptions.forEach(option => {
+                    const productName = option.textContent.toLowerCase();
+                    if (productName.includes(searchTerm)) {
+                        option.style.display = 'block';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Обработка выбора даты
+            document.getElementById('current-date').addEventListener('change', function() {
+                // В реальном приложении здесь будет загрузка данных для выбранной даты
+                alert(`Загрузка данных за ${this.value}`);
+            });
+            
+            // Обработка выбора прошлых дней
+            document.getElementById('prev-days-select').addEventListener('change', function() {
+                if (this.value) {
+                    // В реальном приложении здесь будет загрузка данных для выбранного дня
+                    alert(`Загрузка данных за ${this.value}`);
+                    document.getElementById('current-date').value = this.value;
+                    this.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
