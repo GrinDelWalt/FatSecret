@@ -10,8 +10,9 @@ public class FatSecretDbContextFactory : IDesignTimeDbContextFactory<FatSecretDb
         var optionsBuilder = new DbContextOptionsBuilder<FatSecretDbContext>();
         
         // Строка подключения для миграций
-        optionsBuilder.UseNpgsql("Server=(localdb)\\mssqllocaldb;Database=FatSecretDB;Trusted_Connection=true;MultipleActiveResultSets=true");
+        optionsBuilder.UseNpgsql( "Host=localhost;Port=5432;Database=FatSecretDb;Username=FatAdmin;Password=FatAdmin");
         
         return new FatSecretDbContext(optionsBuilder.Options);
     }
 }
+

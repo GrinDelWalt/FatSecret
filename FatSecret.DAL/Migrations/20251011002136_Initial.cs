@@ -43,11 +43,11 @@ namespace FatSecret.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.id);
-                    table.CheckConstraint("CK_Users_Age", "[age] >= 0 AND [age] <= 150");
-                    table.CheckConstraint("CK_Users_BMR", "[basal_metabolic_rate] >= 0");
-                    table.CheckConstraint("CK_Users_CalorieTarget", "[daily_calorie_target] >= 0");
-                    table.CheckConstraint("CK_Users_Height", "[height] >= 0 AND [height] <= 300");
-                    table.CheckConstraint("CK_Users_Weight", "[weight] >= 0 AND [weight] <= 1000");
+                    table.CheckConstraint("CK_Users_Age", "age >= 0 AND age <= 150");
+                    table.CheckConstraint("CK_Users_BMR", "basal_metabolic_rate >= 0");
+                    table.CheckConstraint("CK_Users_CalorieTarget", "daily_calorie_target >= 0");
+                    table.CheckConstraint("CK_Users_Height", "height >= 0 AND height <= 300");
+                    table.CheckConstraint("CK_Users_Weight", "weight >= 0 AND weight <= 1000");
                 });
 
             migrationBuilder.CreateTable(
@@ -68,8 +68,8 @@ namespace FatSecret.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FoodEntries", x => x.id);
-                    table.CheckConstraint("CK_FoodEntries_Calories", "[calories] >= 0");
-                    table.CheckConstraint("CK_FoodEntries_Quantity", "[quantity] >= 0");
+                    table.CheckConstraint("CK_FoodEntries_Calories", "calories >= 0");
+                    table.CheckConstraint("CK_FoodEntries_Quantity", "quantity >= 0");
                     table.ForeignKey(
                         name: "FK_FoodEntries_Users_user_id",
                         column: x => x.user_id,
@@ -151,7 +151,7 @@ namespace FatSecret.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WeightRecords", x => x.id);
-                    table.CheckConstraint("CK_WeightRecords_Weight", "[weight] > 0 AND [weight] <= 1000");
+                    table.CheckConstraint("CK_WeightRecords_Weight", "weight > 0 AND weight <= 1000");
                     table.ForeignKey(
                         name: "FK_WeightRecords_Users_user_id",
                         column: x => x.user_id,

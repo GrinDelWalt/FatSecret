@@ -13,7 +13,6 @@ namespace FatSecret.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[ServiceFilter(typeof(ValidationFilterAttribute))]
 public class AuthController : ControllerBase
 {
     private readonly CreateUser _createUserService;
@@ -356,4 +355,14 @@ public class AuthController : ControllerBase
     }
 
     #endregion
+}
+[ApiController]
+[Route("api/[controller]")]
+public class TestController : ControllerBase
+{
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return Ok(new { message = "API работает!", timestamp = DateTime.Now });
+    }
 }

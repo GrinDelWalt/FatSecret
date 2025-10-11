@@ -28,7 +28,7 @@ public class CreateUser : IService<CreateUserRequestsDTO, CreateUserResponseDTO>
     {
         // Проверка на существование пользователя
         var existingUser = await _userRepository.All()
-            .Where(x => x.Email == request.Email || x.Email == request.Email)
+            .Where(x => x.Email == request.Email ||  x.Username == request.Username)
             .FirstOrDefaultAsync();
 
         if (existingUser != null)
@@ -44,18 +44,26 @@ public class CreateUser : IService<CreateUserRequestsDTO, CreateUserResponseDTO>
         // Создание нового пользователя
         var newUser = new Domain.Entities.Identity.User()
         {
-            Email = request.Email.ToLowerInvariant(), // Нормализация email
-            Age = request.Age,
-            PasswordHash = hashedPassword, // Сохраняем хешированный пароль
+            Email = request.Email.ToLowerInvariant(),
             Username = request.Username,
+            Age = request.Age,
+            Weight = request.Weight,
+            Height = request.Height,
+            Gender = request.Gender,
+            Goal = request.Goal,
+            ActivityLevel = request.ActivityLevel,
+            BasalMetabolicRate = request.BasalMetabolicRate,
+            DailyCalorieTarget = request.DailyCalorieTarget,
+            Notes = request.Notes,
+            PasswordHash = hashedPassword, // Содержит соль+хеш
+            PasswordSalt = null // Не используется с PasswordService
         };
 
         _userRepository.Add(newUser);
         await _userRepository.SaveChangesAsync();
 
-        _logger.LogInformation("User {email} created successfully", request.Email);
+        _logger.LogInformation("User {Username} created successfully", request.Username);
 
-        // Возвращаем данные без пароля
         return new CreateUserResponseDTO(
             newUser.Id,
             newUser.Username,

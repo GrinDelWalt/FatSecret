@@ -18,6 +18,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        MainAsync(args).GetAwaiter().GetResult();
+    }
+
+    public static async Task MainAsync(string[] args)
+    {
         try
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +33,6 @@ public class Program
                 configuration.ReadFrom.Configuration(context.Configuration);
             });
 
-            // БАЗОВЫЕ СЕРВИСЫ СНАЧАЛА
             builder.Services.AddControllers();
             builder.Services.AddAuthorization();
             builder.Services.AddOpenApi();
@@ -67,7 +71,7 @@ public class Program
 
             // Database initialization
             builder.Services.AddScoped<IDbInitializer, DatabaseInitializer>();
-            builder.Services.AddHostedService<DatabaseInitializer>();
+            builder.Services.AddScoped<FatSecret.Filters.ValidationFilterAttribute>();
 
             // VALIDATION (в самом конце)
             builder.Services.AddCustomValidation();
@@ -77,7 +81,11 @@ public class Program
             {
                 options.AddPolicy("VueApp", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000", "http://127.0.0.1:5500") 
+                    policy.WithOrigins("http://localhost:3000", 
+                            "http://127.0.0.1:5500",
+                            "http://localhost:5500",
+                            "http://localhost:7000",
+                            "null"  ) 
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -124,7 +132,6 @@ public class Program
 
             var app = builder.Build();
 
-            // MIDDLEWARE PIPELINE (порядок ВАЖЕН!)
             
             // Логирование
             app.UseSerilogRequestLogging();
@@ -157,13 +164,22 @@ public class Program
             app.MapControllers();
 
             // Инициализация базы данных (ASYNC properly handled)
-            Task.Run(async () =>
+            // ????????????? ???? ?????? ????? ????????
+            try
             {
-                using var scope = app.Services.CreateScope();
-                var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-                await dbInitializer.InitializeAsync();
-            });
-
+                using (var scope = app.Services.CreateScope())
+                {
+                    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                    await dbInitializer.InitializeAsync();
+                    Console.WriteLine("???? ?????? ??????? ????????????????");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"?????? ????????????? ???? ??????: {ex.Message}");
+            }
+            
+            Console.WriteLine("Host start");
             app.Run();
         }
         catch (Exception ex)

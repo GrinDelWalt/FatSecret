@@ -10,6 +10,7 @@ using System.Text;
 using FatSecret.DAL.Context;
 using FatSecret.Domain.Entities.Identity;
 using FatSecret.Domain.Models.DTO.User;
+using FatSecret.Service.Interfaces.Password;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -23,19 +24,23 @@ public class AuthService : IAuthService
     private readonly FatSecretDbContext _context;
     private readonly IConfiguration _configuration;
     private readonly ILogger<AuthService> _logger;
+    private readonly IPasswordService _passwordService;
 
     public AuthService(
         FatSecretDbContext context,
         IConfiguration configuration,
-        ILogger<AuthService> logger)
+        ILogger<AuthService> logger,
+        IPasswordService passwordService)
     {
         _context = context;
         _configuration = configuration;
         _logger = logger;
+        _passwordService = passwordService;
     }
 
     public async Task<LoginResponseDTO> LoginAsync(string login, string password)
     {
+        
         // Поиск пользователя по email или username
         var user = await _context.Users
             .FirstOrDefaultAsync(u => 
@@ -46,17 +51,22 @@ public class AuthService : IAuthService
         {
             throw new UnauthorizedAccessException("Пользователь не найден или неактивен");
         }
-
+        
+        _logger.LogDebug("Введенный пароль: {Password}", password);
+        _logger.LogDebug("Хеш из БД: {Hash}", user.PasswordHash);
+        
         // Проверка пароля
-        if (!VerifyPassword(password, user.PasswordHash, user.PasswordSalt))
+        if (!_passwordService.VerifyPassword(password, user.PasswordHash))
         {
+            _logger.LogWarning("Invalid password for user {Login}", login);
             throw new UnauthorizedAccessException("Неверный пароль");
         }
+        
+        _logger.LogDebug("Вычисленный хеш: {user.PasswordSalt}", user.PasswordSalt);
 
         // Генерация JWT токена
         var token = await GenerateJwtTokenAsync(user);
         
-        // Обновление времени последнего входа
         user.UpdateLastLogin();
         await _context.SaveChangesAsync();
 
@@ -196,15 +206,14 @@ public class AuthService : IAuthService
         }
 
         // Проверка текущего пароля
-        if (!VerifyPassword(currentPassword, user.PasswordHash, user.PasswordSalt))
+        if (!_passwordService.VerifyPassword(currentPassword, user.PasswordHash))
         {
             throw new UnauthorizedAccessException("Неверный текущий пароль");
         }
 
         // Установка нового пароля
-        var (hash, salt) = HashPassword(newPassword);
-        user.PasswordHash = hash;
-        user.PasswordSalt = salt;
+        user.PasswordHash = _passwordService.HashPassword(newPassword);
+        user.PasswordSalt = null;
         user.UpdateProfile();
 
         // Отзыв всех активных сессий для безопасности

@@ -175,11 +175,11 @@ public class FatSecretDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         // Ограничения
-        entity.HasCheckConstraint("CK_Users_Age", "[age] >= 0 AND [age] <= 150");
-        entity.HasCheckConstraint("CK_Users_Weight", "[weight] >= 0 AND [weight] <= 1000");
-        entity.HasCheckConstraint("CK_Users_Height", "[height] >= 0 AND [height] <= 300");
-        entity.HasCheckConstraint("CK_Users_BMR", "[basal_metabolic_rate] >= 0");
-        entity.HasCheckConstraint("CK_Users_CalorieTarget", "[daily_calorie_target] >= 0");
+        // entity.HasCheckConstraint("CK_Users_Age", "[age] >= 0 AND [age] <= 150");
+        // entity.HasCheckConstraint("CK_Users_Weight", "[weight] >= 0 AND [weight] <= 1000");
+        // entity.HasCheckConstraint("CK_Users_Height", "[height] >= 0 AND [height] <= 300");
+        // entity.HasCheckConstraint("CK_Users_BMR", "[basal_metabolic_rate] >= 0");
+        // entity.HasCheckConstraint("CK_Users_CalorieTarget", "[daily_calorie_target] >= 0");
     }
 
     #endregion
@@ -409,7 +409,7 @@ public class FatSecretDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         // Ограничения
-        entity.HasCheckConstraint("CK_WeightRecords_Weight", "[weight] > 0 AND [weight] <= 1000");
+        //entity.HasCheckConstraint("CK_WeightRecords_Weight", "[weight] > 0 AND [weight] <= 1000");
     }
 
     #endregion
@@ -489,8 +489,8 @@ public class FatSecretDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         // Ограничения
-        entity.HasCheckConstraint("CK_FoodEntries_Calories", "[calories] >= 0");
-        entity.HasCheckConstraint("CK_FoodEntries_Quantity", "[quantity] >= 0");
+        //entity.HasCheckConstraint("CK_FoodEntries_Calories", "[calories] >= 0");
+        //entity.HasCheckConstraint("CK_FoodEntries_Quantity", "[quantity] >= 0");
     }
 
     #endregion

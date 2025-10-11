@@ -1,0 +1,28 @@
+/FatSecret/obj/
+/FatSecret/logs/
+/FatSecret/bin/
+/FatSecret.DAL/bin/
+/FatSecret.DAL/obj/
+/FatSecret.Domain/bin/
+/FatSecret.Domain/obj/
+/FatSecret.Service/bin/
+/FatSecret.Service/obj/
+/FrontendSourse/obj/
+/pgdata/
+
+.idea/
+*.iml
+.vscode/
+
+# Build
+target/
+build/
+out/
+dist/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

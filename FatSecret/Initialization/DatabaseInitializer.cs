@@ -35,7 +35,8 @@ public class DatabaseInitializer : IDbInitializer, IHostedService
             Console.WriteLine($"Ошибка при миграции базы данных: {ex.Message}");
             throw; // Перебрасываем ошибку, чтобы приложение не продолжало работу
         }
-
+        
+        Console.WriteLine("Done");
         return Task.CompletedTask;
     }
 
